@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
-import logo from "./logo.svg";
 import "./App.css";
+import imgSrc from "./trainer.png";
+import template from "./pokemonTemplate.png";
+
 function App() {
   const [pokemonName, setPokemonName] = useState("ditto");
   const [chosen, setChosen] = useState(false);
@@ -15,52 +17,76 @@ function App() {
   });
 
   const searchPokemon = () => {
-    const response = fetch(
-      `https://pokeapi.co/api/v2/pokemon/${pokemonName}`
-    ).then((response) => {
-      setPokemonData({
-        name: pokemonName,
-        species: response.data.species.name,
-        img: response.data.sprites.front_default,
-        hp: response.data.stats[0].base.stat,
-        attack: response.data.stats[1].base.stat,
-        defense: response.data.stats[3].base.stat,
-        type: response.data.types[0].type.name,
+    const response = fetch(`https://pokeapi.co/api/v2/pokemon/${pokemonName}`)
+      .then((response) => response.json())
+      .then((response) => {
+        setPokemonData({
+          name: pokemonName,
+          moves: response.moves[0].move.name,
+          img: response.sprites.front_default,
+          hp: response.stats[0].base_stat,
+          attack: response.stats[1].base_stat,
+          defense: response.stats[3].base_stat,
+          type: response.types[0].type.name,
+        });
+        setChosen(true);
       });
-      setChosen(true);
-    });
-    console.log(response);
   };
 
   return (
-    <div className="App">
+    <div className="">
       <input
-        className="border-b-2 border-black px-4"
+        className="block px-4 m-auto border-b-2 border-black"
         type="text"
         onChange={(e) => {
           setPokemonName(e.target.value);
         }}
       />
       <button
-        className="rounded text-white bg-blue-500 p-2 text-sm"
+        className="block p-2 m-auto my-2 text-sm text-white bg-blue-500 rounded"
         onClick={searchPokemon}
       >
         Search Pokemon
       </button>
-
-      <div>
+      <div className="relative flex text-center">
+        <img
+          src={template}
+          alt="background template"
+          width="1000"
+          height="900"
+          className="self-center block m-auto"
+        />
         {!chosen ? (
-          <h1>Please choose a pokemon</h1>
+          <p></p>
         ) : (
-          <>
-            <h1>{pokemonData.name}</h1>
-            <img src={pokemonData.img} alt={pokemonData.name} />
-            <h2>{pokemonData.species}</h2>
-            <h2>{pokemonData.type}</h2>
-            <h2>{pokemonData.hp}</h2>
-            <h2>{pokemonData.attack}</h2>
-            <h2>{pokemonData.defense}</h2>
-          </>
+          <div className="absolute right-36 top-10">
+            <p>
+              Pokemon Name:{" "}
+              {pokemonData.name.charAt(0).toUpperCase() +
+                pokemonData.name.slice(1)}
+            </p>
+            <img
+              className="w-14 h-14"
+              src={pokemonData.img}
+              alt={pokemonData.name}
+            />
+            <p>
+              {pokemonData.name.charAt(0).toUpperCase() +
+                pokemonData.name.slice(1)}
+              {"'s "}
+              Special Move:{" "}
+              {pokemonData.moves.charAt(0).toUpperCase() +
+                pokemonData.moves.slice(1)}
+            </p>
+            <p>
+              Pokemon Type:{" "}
+              {pokemonData.type.charAt(0).toUpperCase() +
+                pokemonData.type.slice(1)}
+            </p>
+            <p>HP: {pokemonData.hp}</p>
+            <p>Attack: {pokemonData.attack}</p>
+            <p>Defense: {pokemonData.defense}</p>
+          </div>
         )}
       </div>
     </div>
