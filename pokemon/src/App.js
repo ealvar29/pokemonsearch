@@ -1,6 +1,5 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import "./App.css";
-import imgSrc from "./trainer.png";
 import template from "./pokemonTemplate.png";
 
 function App() {
@@ -8,7 +7,6 @@ function App() {
   const [chosen, setChosen] = useState(false);
   const [pokemonData, setPokemonData] = useState({
     name: "",
-    species: "",
     img: "",
     hp: "",
     attack: "",
@@ -22,7 +20,6 @@ function App() {
       .then((response) => {
         setPokemonData({
           name: pokemonName,
-          moves: response.moves[0].move.name,
           img: response.sprites.front_default,
           hp: response.stats[0].base_stat,
           attack: response.stats[1].base_stat,
@@ -70,14 +67,6 @@ function App() {
               src={pokemonData.img}
               alt={pokemonData.name}
             />
-            <p>
-              {pokemonData.name.charAt(0).toUpperCase() +
-                pokemonData.name.slice(1)}
-              {"'s "}
-              Special Move:{" "}
-              {pokemonData.moves.charAt(0).toUpperCase() +
-                pokemonData.moves.slice(1)}
-            </p>
             <p>
               Pokemon Type:{" "}
               {pokemonData.type.charAt(0).toUpperCase() +
